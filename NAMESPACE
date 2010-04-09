@@ -1,0 +1,6 @@
+exportPattern("^[^\\.]")
+import(stats, graphics, utils, methods)
+exportClasses(movG)
+exportMethods(show, summary, fitted, residuals, entryData, movingMean, sketchGrid)
+
+

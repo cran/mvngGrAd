@@ -1,0 +1,718 @@
+\documentclass{article}
+\usepackage[dvipsnames,usenames]{color}
+\definecolor{darkgreen}{rgb}{0,.6,.2} 
+\usepackage{amsmath}
+% \VignetteIndexEntry{An R Package for moving Grid Adjustment}
+\SweaveOpts{keep.source=TRUE} 
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{varioref}
+\onehalfspacing
+\usepackage{url}
+\usepackage{Sweave}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{hyperref}
+\usepackage{ifthen}
+\usepackage{keyval}
+\hypersetup{pdfborder={0 0 0 0}, linkcolor ={blue}, colorlinks =
+  {true}, citecolor = {darkgreen}, urlcolor = {VioletRed}}
+
+\begin{document}
+\title{R Package mvngGrAd: Moving Grid Adjustment In Plant
+  Breeding Field Trials}
+\author{Frank Technow\footnote{University of Hohenheim, Institute of
+    Plant Breeding, Seed Science and Population Genetics, Stuttgart, Germany}}
+\date{Version 0.1.0}
+\maketitle 
+
+\section{Moving grid adjustment}
+
+Moving grid adjustment is a spatial method to adjust for environmental
+variation in field trials. It is most common in unreplicated plant
+breeding field trials.  The most extreme form of unreplicated trials
+is single plant evaluation, for example for recurrent mass selection
+in populations.
+
+The trial is arranged in a spatial row-column like design.  Each entry
+is then associated with a cell, respectively with a row and column
+number.  A grid is constructed around each cell (= entry) and the
+mean of the cells included in the grid is calculated. The moving
+mean of the ith entry, denoted as $x_{i}$, is calculated as:
+\begin{equation}
+  \label{eq:MvG}
+  x_{i} = \frac{\sum_j p_{j,obs} \cdot I(p_{j,obs} \in G_{i})}{\sum_j
+    I(p_{j, obs} \in G_{i})}
+\end{equation}
+The grid of entry $i$ is denoted by $G_{i}$ and $I(\cdot)$ is a
+indicator function that takes the value 1 if the condition is
+satisfied and 0 if not. The observed phenotypic values of all entries
+which could potentially be included in $G_{i}$ are denoted by
+$p_{j,obs}$.  The value $x_{i}$ is taken as a measure of the growing
+conditions for the entry $i$ and is used as a covariate to calculate
+an adjusted phenotypic value ($p_{i, adj}$) according to the following
+formula:
+
+\begin{equation}
+  \label{eq:adj}
+  p_{i, adj} = p_{i, obs} - b (x_{i} - \bar{x})
+\end{equation}
+Where $p_{i, obs}$ denotes the observed phenotypic value of the ith
+entry, $\bar{x}$ is the mean of all $x_{i}$ and $b$ the regression
+coefficient in the general linear model:
+\begin{equation}
+  \label{eq:model}
+  p_{i, obs} = a + b  x_{i}
+\end{equation}
+with intercept $a$.
+
+The phenotypic value is a function of the genotypic value $g_i$ and
+the environmental error $e_i$. Before the adjustment this is
+\begin{equation}
+  \label{eq:obsP}
+  p_{i, obs} = g_{i} + e_{i} ,
+\end{equation}
+and after
+\begin{equation}
+  p_{i, adj} = g_{i} + e'_{i}  
+\end{equation}
+with $e'_{i}$ being the $e_{i}$ after adjustment.
+
+When the adjustment was successful,
+\begin{equation}
+  \label{eq:vare}
+  var(e'_{i}) < var(e_{i})
+\end{equation}
+and $p_{i, adj}$ is a better estimator of $g_{i}$ than $p_{i,obs}$. A
+direct consequence of this is that the heritability ($h^{2}$) will
+improve. The $h^{2}$ gives the proportion of variance observed that
+was attributable to genetic effects. The closer to one the value is,
+the better, because only genetic variance can be exploited by the
+breeder. The heritability before adjustment is calculated as
+\begin{equation}
+  \label{eq:h2}
+  h^2_{obs} = \frac{var(g)}{var(p_{obs})}
+\end{equation}
+where $var(g)$ is the \emph{exploitable} genetic variance and
+$var(p_{obs})$ is the variance of $p_{obs}$ (i.e. the phenotypic variance).
+The heritability after adjustment can then be calculated as
+\begin{equation}
+  \label{eq:h2adj}
+  h^2_{adj} = \frac{var(g)}{var(p_{adj})}
+\end{equation}
+and because of (\ref{eq:vare})
+\begin{equation}
+  \label{eq:hvsh}
+  h^{2}_{adj} > h^{2}_{obs}
+\end{equation}
+
+The adjustment procedure can only be successful, and in fact valid, if
+two important conditions are met:\enlargethispage{2ex}
+\begin{enumerate}
+\item \label{firstCond} the entries must not influence the values of their covariates
+  ($x_{i}$) and
+\item the entries must have been randomly assigned to positions in the
+  field.
+\end{enumerate}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}} If either one or both
+are violated, the adjustment can lead to erroneous results. If for
+example $p_{i,obs}$ is included in the calculation of $x_{i}$, the
+first condition is violated. The result is that the $p_{adj}$ of
+superior genotypes are downwardly biased and the $p_{adj}$ of inferior
+ones upwardly. When, as is the case many times, entries are not
+randomized but grouped according to family, the $p_{adj}$ of superior
+families are downwardly biased and the $p_{adj}$ of inferior ones
+upwardly. In the best case this leads to a reduction in
+$var(g)$\footnote[2]{The adjustment is of course something that is
+  done to the data, and as such can not alter the population
+  variance. To distinguish $var(g)$ from the true genetic variance in
+  the population, I termed it \emph{exploitable genetic variance}.}
+which might reverse (\ref{eq:hvsh}) or at least reduces the
+superiority of $h^{2}_{adj}$. In the worst case, selection might be
+directed to the opposite of the intended direction!
+
+Please refer to \cite{Falconer} for details on quantitative genetics,
+to \cite{cox} for details on experimental design and covariate
+adjustment and to \cite{selMeth} for plant breeding designs and moving
+grids in particular.
+
+
+\begin{thebibliography}{8} 
+\bibitem[a]{Falconer}D. S. Falconer:
+  {\sl Introduction to Quantitative Genetics}. Oliver and Boyd.,
+  London, 1967.
+  
+\bibitem[b]{cox}W. G. Cochran and G. M. Cox:
+  {\sl Experimental Designs}. John Wiley \& Sons, Inc.,
+  New York, 1964.
+
+\bibitem[c]{selMeth} I. Bos and P. Caligari: {\sl Selection Methods in
+    Plant Breeding}. Springer New York, 2008.
+\end{thebibliography}
+
+\section{The package}
+
+\subsection{Overview}
+
+The function performing the adjustment is called \texttt{movingGrid(
+  )}.  The function \texttt{sketchGrid( )} helps with designing the
+grid by plotting its shape.  The functions \texttt{fitted( )},
+\texttt{movingMean( )} and \texttt{entryData( )} are convenience
+functions to extract the most relevant information from the object
+created by \mbox{\texttt{movingGrid( )}}.  The package defines a new class,
+\texttt{movG}, and provides methods for the functions
+\texttt{entryData( )}, \texttt{fitted( )}, \texttt{movingMean( )},
+\texttt{summary( )}, \mbox{\texttt{show( )}} and \texttt{residuals( )}. What
+follows is a detailed tutorial on the usage of \mbox{\texttt{movingGrid( )}}.
+
+\pagebreak
+As a first step, the package needs to be loaded.
+<<setWidth,echo = FALSE, results = hide>>=
+op <- options(); utils::str(op) 
+options(width = 60)
+options(prompt = "R> ")
+@ 
+<<loadPackage>>=
+library(mvngGrAd)
+@ 
+
+\subsection{Setting up the grid}
+
+The shape of the grid must be designed by the user. This is done via
+three arguments to \texttt{movingGrid( )}, \texttt{shapeCross},
+\texttt{layers} and \texttt{excludeCenter}. With the help of
+\texttt{shapeCross} one specifies the cells that are to be included in
+a grid that extends from the center in 0, 90, 180 and 270 degree
+direction, with \texttt{layers} the cells that extend the grid in all
+other directions. The two can be used together or alone.  With the
+argument \texttt{excludeCenter} one can decide whether or not to
+include $p_{i,obs}$ in the calculation of $x_{i}$.  The
+usage is best described with examples.
+
+For designing the grid, function \texttt{sketchGrid( )} takes the same
+arguments as \texttt{movingGrid( )} and plots a visualization of the
+grid. This function should always be used to verify that the actual
+arguments to \texttt{shapeCross} and \texttt{layers} do create the
+intended grid.
+
+The argument to \texttt{shapeCross} is given in form of
+a list with four components, each representing one of the directions.
+\begin{enumerate}
+\item DOWN (180\textdegree)
+\item UP (0\textdegree)
+\item LEFT (270\textdegree)
+\item RIGHT (90\textdegree).
+\end{enumerate}
+
+Other arguments to \texttt{sketchGrid( )} are \texttt{i}, the row of the
+central cell; \texttt{j} the column of the central cell;
+\texttt{rowLimit}, the number of rows in the field layout;
+\mbox{\texttt{colLimit}}, the number of columns; and
+\texttt{excludeCenter}. If only one of \texttt{shapeCross} or
+\texttt{layers} is to be used, the other must be \texttt{NULL}.
+
+A grid that includes one cell above and below the center and four to
+its right and left and excludes the central cell can be created as
+follows\footnote[3]{The calls to \texttt{sketchGrid( )} produce always
+  one plot. To save space, these plots are not included in this document,
+  but instead figures are shown that combine several of them. These
+  figures are produced from code that is included in the
+  \texttt{sweave} file but is not echoed. However, the calls to
+  \texttt{sketchGrid( )} are identical.} \footnote[4]{This is the grid
+  used by a stand alone software called ``plabstat''
+  (\url{https://www.uni-hohenheim.de/plantbreeding/software/}) that is
+  around since the 70's. With these settings, the results of
+  ``plabstat'' can be reproduced.}(Figure \ref{fig:atod} [a]):
+
+
+<<sketchGrid1, eval = FALSE>>=
+
+sketchGrid(i = 10,
+           j = 10,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(1, ## down
+                1, ## up
+                1:4, ## left
+                1:4),## right 
+           layers = NULL,
+           excludeCenter = TRUE)
+@ 
+
+\begin{figure}[hbt]
+  \centering
+  \includegraphics[width = 12cm]{mvngGrAd-aToD}\\
+  \caption{Grids for different settings of \texttt{shapeCross} ,\texttt{layers}, \texttt{excludeCenter} and \mbox{\texttt{i, j}}}
+  \label{fig:atod}
+\end{figure}
+Using \texttt{shapeCross} as follows, creates a grid that
+also includes one cell above and below the center and four to its
+right and left but excludes the cells right next to the center (Figure \ref{fig:atod} [b]).
+\SweaveOpts{keep.source = FALSE}
+<<sketchGrid2, eval = FALSE>>=
+
+sketchGrid(i = 10,
+           j = 10,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(2,
+                2, ## up
+                2:5, ## left
+                2:5),## right 
+           layers = NULL,
+           excludeCenter = TRUE)
+@ 
+
+Using \texttt{shapeCross} on its own, without \texttt{layers}, can
+often make sense, using \texttt{layers} on its own usually
+does not. However, it is introduced independently from
+\texttt{shapeCross} to make its usage clear. The actual argument to
+\texttt{layers} is an integer vector. Each integer represents a
+``layer'' of cells included in the grid. Integer \texttt{1} would include the
+cells that are right next to the center, apart from the ones in 0, 90,
+180 and 270 degree direction (Figure \ref{fig:atod} [c]):
+
+<<sketchGrid3, eval = FALSE, fig = FALSE, include = FALSE >>=
+  sketchGrid(i = 10,
+           j = 10,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(NULL, ## down
+                NULL, ## up
+                NULL, ## left
+                NULL),## right 
+           layers = 1,
+           excludeCenter = TRUE)
+@
+and integer \texttt{2} the ones on top of that (Figure \ref{fig:atod} [d]):
+<<sketchGrid4, fig = FALSE,  eval = FALSE,include = FALSE >>=
+  sketchGrid(i = 10,
+           j = 10,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(NULL, ## down
+                NULL, ## up
+                NULL, ## left
+                NULL),## right 
+           layers = 1:2,
+           excludeCenter = TRUE)
+@ 
+and so on.
+
+By using \texttt{shapeCross} and \texttt{layers} jointly, more complex
+grids can be created. For example a honeycomb shape, which might be most suited for
+single plant evaluation (Figure \ref{fig:etoh} [e]):
+
+<<sketchGrid5, fig = FALSE, include = FALSE, eval = FALSE >>=
+sketchGrid(i = 10,
+           j = 10,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(1:4,
+                1:4,
+                1:4,
+                1:4),
+           layers = c(1:4),
+           excludeCenter = TRUE)
+@ 
+
+However, one should keep in mind that \texttt{sketchGrid( )} can not be
+made to display any scale differences between row and column
+widths. So for unequal row and column width, the grid will look
+different on the field than the output of \texttt{sketchGrid( )}. In this
+case \texttt{sketchGrid( )} will only help to see which cells are
+included.
+
+Setting the argument \texttt{excludeCenter} to \texttt{FALSE} will
+include the central cell, the one with the entry whose $p_{obs}$ is to
+be adjusted, in the calculation\enlargethispage{2ex} of $x_{i}$ (Figure \ref{fig:etoh} [f]):
+<<sketchGrid5, fig = FALSE, include = FALSE , eval = FALSE>>=
+sketchGrid(i = 10,
+           j = 10,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(1:4,
+                1:4,
+                1:4,
+                1:4),
+           layers = c(1:4),
+           excludeCenter = FALSE)
+@ 
+
+
+\begin{figure}[hbt]
+  \centering
+  \includegraphics[width = 12cm]{mvngGrAd-eToH}
+  \caption{Grids for different settings of \texttt{shapeCross} ,\texttt{layers}, \texttt{excludeCenter} and \mbox{\texttt{i, j}}}
+  \label{fig:etoh}
+\end{figure}
+This is of course in clear violation of the first condition for a
+valid adjustment (see Section \vref{firstCond}). In fact one may
+consider to exclude the cells right next to the center as well. This
+way the effects of possible interactions between the entry in the
+central cell and its neighbors, do not influence $x_i$ either (Figure
+\ref{fig:etoh} [g]):
+
+<<sketchGrid7, fig = FALSE, include = FALSE , eval = FALSE>>=
+sketchGrid(i = 10,
+           j = 10,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(2:4,
+                2:4,
+                2:4,
+                2:4),
+           layers = c(2:4),
+           excludeCenter = TRUE)
+@ 
+
+ 
+For cells close to the border of the experimental area, only incomplete
+grids can be constructed of course. This is correctly displayed by
+\texttt{sketchGrid( )} (Figure \ref{fig:etoh} [h]):
+<<sketchGrid8, fig = FALSE, include = FALSE, eval = FALSE >>=
+
+sketchGrid(i = 2,
+           j = 2,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(2:4,
+                2:4,
+                2:4,
+                2:4),
+           layers = c(2:4),
+           excludeCenter = TRUE)
+
+@ 
+
+\subsection{Using \texttt{movingGrid( )}}
+
+To demonstrate the function \texttt{movingGrid ( )} itself, data needs
+to be generated first.
+
+The experimental area of the simulated field trial consists of 50 rows
+and 50 columns. The row and column subscripts of each cell are stored
+because they are part of the input to \texttt{movingGrid( )}.  The two
+vectors must of course correspond to each other.
+
+<<rowAndCol>>=
+## row vector
+rows <- rep(1 : 50, each = 50)
+
+## column vector
+cols <- rep(1 : 50, 50)
+@ 
+The population parameters are as follows:
+\begin{itemize}
+\item population mean $\mu$ = 30
+\item genotypic variation $var(g)$ = 25
+\item environmental (error) variation $var(e)$ = 45
+\end{itemize}
+The environmental errors $e$ are simulated in such a way that there is
+a strong systematic horizontal gradient in growing conditions present
+in the experimental area, together with some unsystematic small scale
+noise.
+<<envError>>=  
+set.seed(13)
+
+envError <-
+  rep(c(seq(from = -12.5 , to = -0.5, by = 0.5),
+        seq(from =   0.5 , to = 12.5, by = 0.5)),
+      each = 50) + rnorm(2500)
+@
+\pagebreak
+The following code will scale this vector to have a variance of 45.
+<<scaleEnvError>>=
+scaleFactE <-  (sd(envError) / sqrt(45))
+
+envError <- 
+  scale(envError, center = FALSE, 
+        scale = scaleFactE)
+
+envError <- as.vector(envError)
+@ 
+The genotypic effects of the 2500 entries are simulated with zero
+mean and variance of 25 (because of some sampling variation the vector
+is additionally scaled to assure a variance of 25).
+
+<<gEffects>>=
+gEffects <- rnorm(2500,
+                  mean = 0,
+                  sd = 5)
+
+scaleFactG <- (sd(gEffects)/sqrt(25))
+
+gEffects <- 
+  scale(gEffects,
+        center = FALSE, 
+        scale = scaleFactG)
+
+gEffects <- as.vector(gEffects)
+@ 
+To arrive at the genotypic values $g$, $\mu$ is added to \texttt{gEffects} 
+<<gValues>>=
+## population mean
+mu <- 30
+
+gValues <- mu + gEffects
+@ 
+The observed phenotypic values ($p_{obs}$) are then obtained by adding
+\texttt{gValues} to \texttt{envError} according to (\ref{eq:obsP}).
+<<obsPisGplusE>>=
+obsP <- gValues + envError
+@ 
+To observe the handling of \texttt{NA} values, the third element of
+\texttt{obsP} is set to \texttt{NA}.
+<<setNA>>=
+obsP[3] <- NA
+@ 
+Finally the phenotypic and genetic variance are stored for later use.
+Note that $var(p_{obs})$ will not be exactly 70 as it should be, but slightly
+different due to minimal, ``random'' covariance between
+\texttt{gEffects} and \texttt{envError}.
+<<varPandVarG>>=
+## phenotypic variance
+varP <- var(obsP,na.rm = TRUE)
+
+## genotypic variance
+varG <- var(gEffects)
+@ 
+
+The row and column vectors are given to the arguments \texttt{rows}
+and \texttt{columns} and the $p_{obs}$ to \texttt{obsPhe} of
+\texttt{movingGrid( )} The grid is designed by \texttt{shapeCross}
+and \texttt{layers} as demonstrated above. The argument
+\texttt{excludeCenter} is \texttt{TRUE} by default.
+\pagebreak
+\SweaveOpts{keep.source = TRUE}
+<<movingGrid1, results = hide>>=
+## creates object of class movG
+resMG <- movingGrid(rows = rows,
+                    columns = cols,
+                    obsPhe = obsP,
+                    shapeCross =
+                    list(1:2,
+                         1:2,
+                         1:2,
+                         1:2),
+                    layers = 1)
+@ 
+A summary of the adjustment process can be obtained by the
+function \mbox{\texttt{summary( )}}.
+\SweaveOpts{keep.source = FALSE}
+\enlargethispage{2ex}
+<<summary>>=
+summary(resMG)
+@ 
+
+The first line names the function used. In the second line the number
+of values (cells) in a complete grid is given. The mean number of
+values in the third line is always smaller, because for entries close
+to the edge of the experimental area only partial grids can be
+constructed. NA values also have this effect. The fourth line gives
+the number of observations\footnote[4]{An ``observation'' is everything
+  mentioned in the vectors given to \texttt{rows} and
+  \texttt{columns}, irrespective of whether the corresponding data
+  entry in the vector to \texttt{obsPhe} is \texttt{NA} or not.} and
+how many of these were NA.  The Pearson coefficient of correlation
+between $x_i$ and $p_{i, obs}$ gives information on the strength of
+the influence of the covariate $x_i$. If this value is too low, an
+adjustment will not yield better estimates of $g$ than by using
+$p_{obs}$ directly. In rare cases, for example under strong inter plant
+competition, the correlation coefficient can be below zero. In such a
+case one should not perform an adjustment. The next line gives $b$, the
+regression coefficient used for the adjustment [see
+(\ref{eq:adj})]. Finally, the dimensions of the experimental
+\enlargethispage{2ex} area are given.\footnote[5]{The function
+  \texttt{movingGrid( )} automatically assumes a rectangular experimental
+  area with the given dimensions. Therefore, the number of cells in
+  the ``virtual'' experimental. area is $rows \times columns$. If the number of
+  observations is smaller than this, the remaining cells are filled
+  with \texttt{NA} values. These are not ``observations'' and are not
+  included in the number of NA values given in the summary. They also
+  do not influence the results of \texttt{movingGrid( )} and are
+    ignored by the various extractor functions.}
+
+The function \texttt{entryData( )} extracts all information on an entry
+available, its row, column, $p_{i,adj}$,
+$p_{i,obs}$, $x_{i}$ and the number of values used for calculating its
+$x_{i}$.
+<<entryData>>=
+## only first 10
+head(entryData(resMG))
+@ 
+For the third element, which is \texttt{NA}, no $p_{adj}$
+was calculated of course. The moving mean $x_{i}$ is, however, available.
+
+The $p_{adj}$ can be obtained by using the function \texttt{fitted( )}.
+<<fitted>>=
+## only first 10
+fitted(resMG)[1:10]
+@ 
+
+The $x$ are extracted by \texttt{movingMean( )}.
+<<movingMean>>=
+## only first 10
+movingMean(resMG)[1:10]
+@ 
+The residuals for the model in (\ref{eq:model}) are returned by the
+function \texttt{residuals( )}.
+<<residuals>>=
+residuals(resMG)[1:10]
+@ 
+\vspace{4ex}
+The $h^2_{obs}$ is \Sexpr{round(varG/varP,3)}
+<<hsquareObs>>=
+varG/varP
+@ 
+while the $h^2_{adj}$ is with
+\Sexpr{round(varG/var(fitted(resMG),na.rm=TRUE),3)} considerably
+higher.
+<<hsquareAdj>>=
+## variance of the adj. phenot. values
+varPadj <- var(fitted(resMG),na.rm = TRUE)
+
+varG/varPadj
+@ 
+This demonstrates a tremendous improvement due to the adjustment
+procedure. In reality the improvement will usually not be this much
+because the contribution of random noise, which can not be picked up
+by moving grid adjustment, is much larger than in this example.
+
+
+
+<<aToD, echo = FALSE, fig = TRUE, pdf = TRUE, include = FALSE, results = hide, width = 10, height = 10>>=
+
+ 
+layout(rbind(c(1,2),
+             c(3,4)))
+ 
+sketchGrid(i = 10,
+           j = 10,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(1, ## down
+                1, ## up
+                1:4, ## left
+                1:4),## right 
+           layers = NULL,
+           excludeCenter = TRUE)
+
+title(main = "[a]")
+
+sketchGrid(i = 10,
+           j = 10,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(2, ## down
+                2, ## up
+                2:5, ## left
+                2:5),## right 
+           layers = NULL,
+           excludeCenter = TRUE)
+
+title(main = "[b]")
+
+sketchGrid(i = 10,
+           j = 10,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(NULL, ## down
+                NULL, ## up
+                NULL, ## left
+                NULL),## right 
+           layers = 1,
+           excludeCenter = TRUE)
+
+title(main = "[c]")
+
+sketchGrid(i = 10,
+           j = 10,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(NULL, ## down
+                NULL, ## up
+                NULL, ## left
+                NULL),## right 
+           layers = 1:2,
+           excludeCenter = TRUE)
+
+title(main = "[d]")
+
+@ 
+
+<<eToH, echo = FALSE, fig = TRUE, pdf = TRUE, include = FALSE, width = 10, height = 10>>=
+
+layout(rbind(c(1,2),
+             c(3,4)))
+
+sketchGrid(i = 10,
+           j = 10,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(1:4,
+                1:4,
+                1:4,
+                1:4),
+           layers = c(1:4),
+           excludeCenter = TRUE)
+
+title(main = "[e]")
+
+
+sketchGrid(i = 10,
+           j = 10,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(1:4,
+                1:4,
+                1:4,
+                1:4),
+           layers = c(1:4),
+           excludeCenter = FALSE)
+
+title(main = "[f]")
+
+sketchGrid(i = 10,
+           j = 10,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(2:4,
+                2:4,
+                2:4,
+                2:4),
+           layers = c(2:4),
+           excludeCenter = TRUE)
+
+title(main = "[g]")
+
+sketchGrid(i = 2,
+           j = 2,
+           rowLimit = 20,
+           colLimit = 20,
+           shapeCross =
+           list(2:4,
+                2:4,
+                2:4,
+                2:4),
+           layers = c(2:4),
+           excludeCenter = TRUE)
+
+title(main = "[h]")
+@
+
+\end{document}
