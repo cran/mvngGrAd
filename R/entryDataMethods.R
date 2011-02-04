@@ -7,7 +7,7 @@ setMethod("entryData",
                               adjustedPhe = object@adjustedPhe,
                               observedPhe = object@observedPhe,
                               movingMean = object@movingMean,
-                              nValues = object@nValues),2))
+                              nValues = object@nValues),3))
           }
            ) 
 

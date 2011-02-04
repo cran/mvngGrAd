@@ -22,7 +22,7 @@
   Breeding Field Trials}
 \author{Frank Technow\footnote{University of Hohenheim, Institute of
     Plant Breeding, Seed Science and Population Genetics, Stuttgart, Germany}}
-\date{Version 0.1.0}
+\date{package version 0.1.1}
 \maketitle 
 
 \section{Moving grid adjustment}
