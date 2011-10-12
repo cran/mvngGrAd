@@ -17,8 +17,8 @@
 \tabular{ll}{
 Package: \tab mvngGrAd\cr
 Type: \tab Package\cr
-Version: \tab 0.1.0\cr
-Date: \tab 2010-04-09\cr
+Version: \tab 0.1.2\cr
+Date: \tab 2011-10-12\cr
 License: \tab GNU General Public License Version 2, June 1991\cr
 LazyLoad: \tab no\cr
 }
