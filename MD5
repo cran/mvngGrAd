@@ -1,4 +1,4 @@
-df5e5bad48672af74a138587628fc8a2 *DESCRIPTION
+2a25d282632ecfedefc99040a2774eca *DESCRIPTION
 f3e1a3e92b10f0bf2b3bbdfb59c47bad *NAMESPACE
 72029cc23e5608afb2964da5bf9d9152 *R/circularExtension.R
 521388f67a96bfd8ba3fc33e23b6d62a *R/entryData.R
@@ -14,9 +14,11 @@ da7f2f0c0324c493f6d7132a05d0be4c *R/movingMeanMethods.R
 42a8a60461a8350a9490c09586d33430 *R/sketchGrid.R
 3fa36c776f96f980d4117ae465ae2482 *R/sketchGridMethods.R
 c9b858d395295b2f6852f04dec32d512 *R/summaryMethods.R
+6842b68d1bed064794b1f5b13b113975 *build/vignette.rds
 7f2e367d904623028c6fc82b153692b0 *inst/CITATION
-a62c140b48e443e3f86fb8badc305dc0 *inst/doc/mvngGrAd.Rnw
-03dc23fe8d17bf64b038aa9702d6a5e9 *inst/doc/mvngGrAd.pdf
+dd0f221f3bca6f4c575a73d6d70ef53c *inst/doc/mvngGrAd.R
+d275f7ff3025b03eb363e11ccb5d959e *inst/doc/mvngGrAd.Rnw
+aaf4a3dd427dff11242f4af5cfc87683 *inst/doc/mvngGrAd.pdf
 15e06d326d4663b83540aa16095a68f9 *man/circularExtension.Rd
 668483a58b5e96322b7ecf24ecf71fcc *man/entryData-methods.Rd
 317fb4c93f33c7aa2e35459e3cc1e5ac *man/entryData.Rd
@@ -26,7 +28,7 @@ d196d651268a56e3f31f239cb9b3ef82 *man/movG-class.Rd
 113b7a8bd5486aae019070d6a24e972a *man/movingGrid.Rd
 75e4442807a6ee890c1c1ede55c6abfe *man/movingMean-methods.Rd
 54a2a685cf3c167de2f7a4800b4b4330 *man/movingMean.Rd
-3bf7b996ecb19c586b6a1ae7673b7fba *man/mvngGrAd-package.Rd
+d7cbf631a2d512acd3b4309f6d703570 *man/mvngGrAd-package.Rd
 07233c32835eb116e7a770f99d743583 *man/residuals-methods.Rd
 f6bf0b346e3f3b8550d781ab498cee98 *man/show-methods.Rd
 e942dc537aaf795b679030c5d7b47ea2 *man/sketchGrid-methods.Rd
@@ -36,3 +38,4 @@ a8437f78f07970b9b50988f123e62c30 *man/summary-methods.Rd
 bd3cd49b19c61605403082ddf7570941 *tests/unrepTritPlabStat.RData
 7e31d98db3b4229ec238b16f5af30ba8 *tests/unrepTriticale.R
 88f8446324c2d96eafb01314fd008852 *tests/unrepTriticale.Rout.save
+d275f7ff3025b03eb363e11ccb5d959e *vignettes/mvngGrAd.Rnw
