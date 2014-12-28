@@ -20,9 +20,8 @@
 \begin{document}
 \title{R Package mvngGrAd: Moving Grid Adjustment In Plant
   Breeding Field Trials}
-\author{Frank Technow\footnote{University of Hohenheim, Institute of
-    Plant Breeding, Seed Science and Population Genetics, Stuttgart, Germany}}
-\date{package version 0.1.3}
+\author{Frank Technow}
+\date{package version 0.1.4}
 \maketitle 
 
 \section{Moving grid adjustment}

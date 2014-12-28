@@ -17,8 +17,8 @@
 \tabular{ll}{
 Package: \tab mvngGrAd\cr
 Type: \tab Package\cr
-Version: \tab 0.1.3\cr
-Date: \tab 2013-12-11\cr
+Version: \tab 0.1.4\cr
+Date: \tab 2014-12-28\cr
 License: \tab GNU General Public License Version 2, June 1991\cr
 LazyLoad: \tab no\cr
 }
@@ -35,10 +35,7 @@ provides methods for it for the functions, \code{movingMean},
 
  \author{Frank Technow
 
-   at University of Hohenheim, Institute of Plant Breeding, Seed Science
-   and Population Genetics, Stuttgart, Germany 
-
-   Maintainer: Frank Technow \email{ Frank.Technow@uni-hohenheim.de }
+   Maintainer: Frank Technow \email{ Frank.Technow@gmx.net }
 }
 \keyword{ package }
 
