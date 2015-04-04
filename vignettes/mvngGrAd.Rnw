@@ -21,7 +21,7 @@
 \title{R Package mvngGrAd: Moving Grid Adjustment In Plant
   Breeding Field Trials}
 \author{Frank Technow}
-\date{package version 0.1.4}
+\date{package version 0.1.5}
 \maketitle 
 
 \section{Moving grid adjustment}
