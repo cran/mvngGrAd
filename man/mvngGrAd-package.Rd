@@ -18,7 +18,7 @@
 Package: \tab mvngGrAd\cr
 Type: \tab Package\cr
 Version: \tab 0.1.5\cr
-Date: \tab 2015-04-04\cr
+Date: \tab 2023-10-09\cr
 License: \tab GNU General Public License Version 2, June 1991\cr
 LazyLoad: \tab no\cr
 }
@@ -35,7 +35,7 @@ provides methods for it for the functions, \code{movingMean},
 
  \author{Frank Technow
 
-   Maintainer: Frank Technow \email{ Frank.Technow@gmx.net }
+   Maintainer: Frank Technow \email{ mvnggrad@fastmail.com }
 }
 \keyword{ package }
 
